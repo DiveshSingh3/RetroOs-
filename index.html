@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RetrOS — Divesh Singh</title>
+    <link rel="icon" type="image/ico" href="assets/icons/logo.ico" />
+
+    <meta
+      property="og:title"
+      content="RetroOS: An Interactive Portfolio by Divesh Singh"
+    />
+    <meta
+      property="og:description"
+      content="A nostalgic, retro-styled personal portfolio website that mimics classic operating systems, designed by Divesh Singh."
+    />
+    <meta property="og:url" content="https://diveshsingh.com/" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:domain" content="diveshsingh.com" />
+    <meta
+      name="twitter:image"
+      content="https://diveshsingh.com/assets/icons/og-image1.webp"
+    />
+    <meta name="twitter:site" content="@JustDivesh" />
+    <meta
+      name="twitter:title"
+      content="RetroOS: Divesh Singh's Interactive Portfolio"
+    />
+    <meta
+      property="og:image"
+      content="https://diveshsingh.com/assets/icons/og-image1.webp"
+    />
+    <meta
+      name="twitter:description"
+      content="Explore my interactive portfolio, a Retro-Styled OS built with vanilla HTML, CSS, and JS. Click around, open apps, and learn more about my work."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/apps.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="stylesheet" href="css/projects.css" />
+    <link rel="stylesheet" href="css/terminal.css" />
+    <link rel="stylesheet" href="css/music.css" />
+    <link rel="stylesheet" href="css/matrix.css" />
+  </head>
+  <body>
+    <div id="boot-screen" aria-hidden="false">
+      <div class="boot-center">
+        <div>
+          <img src="assets/icons/logo.webp" class="boot-apple" alt="Apple" />
+        </div>
+
+        <div
+          class="boot-progress-wrap"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          <div id="boot-progress" class="boot-progress"></div>
+        </div>
+
+        <div id="boot-percent" class="boot-percent">0%</div>
+
+        <div id="boot-caption" class="boot-caption">Starting RetroOS...</div>
+      </div>
+    </div>
+
+    <!-- LOGIN SCREEN START -->
+    <div id="login-screen" style="display: flex">
+      <div class="login-container">
+        <div class="login-avatar">
+          <img src="assets/icons/me.png" alt="User Avatar" />
+        </div>
+        <div class="login-name">Divesh Singh</div>
+        <div class="login-input-wrapper">
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Enter Password"
+          />
+          <button id="login-btn" onclick="attemptLogin()">➝</button>
+        </div>
+        <div class="login-hint">Hint: Just press Enter</div>
+      </div>
+    </div>
+    <!-- LOGIN SCREEN END -->
+
+    <div class="grain"></div>
+
+    <div id="icon-readme" class="desktop-icon" style="top: 80px; left: 20px">
+      <img src="assets/icons/TxtIcon.webp" alt="ReadMe" />
+      <span>ReadMe.txt</span>
+    </div>
+    <!-- <div id="icon-projects" class="desktop-icon" style="top: 180px; left: 20px">
+      <img src="assets/icons/folderIcon.webp" alt="Projects" />
+      <span>Projects</span>
+    </div> -->
+
+    <div id="readme-container"></div>
+    <div id="projects-container"></div>
+
+    <div class="top-bar">
+      <div class="left">
+        <div
+          class="icon"
+          data-menu="appleMenu"
+          onclick="toggleMenu('appleMenu', this)"
+        >
+          <img src="assets/icons/logo.webp" class="logo" alt="Apple" />
+        </div>
+        <div
+          class="icon"
+          data-menu="fileMenu"
+          onclick="toggleMenu('fileMenu', this)"
+        >
+          File
+        </div>
+        <div
+          class="icon"
+          data-menu="editMenu"
+          onclick="toggleMenu('editMenu', this)"
+        >
+          Edit
+        </div>
+        <div
+          class="icon"
+          data-menu="viewMenu"
+          onclick="toggleMenu('viewMenu', this)"
+        >
+          View
+        </div>
+      </div>
+      <div class="right-icons">
+        <!-- Wi-Fi Status Icon -->
+        <div
+          class="status-icon"
+          id="wifi-icon"
+          onclick="openStatusWindow('wifiApp', this)"
+        >
+          <img src="assets/icons/wifi.webp" alt="Wi-Fi" />
+        </div>
+        <!-- Battery Status Icon -->
+        <div
+          id="battery-icon"
+          class="status-icon battery"
+          onclick="openStatusWindow('batteryApp', this)"
+        >
+          <div id="battery-level" class="battery-level"></div>
+        </div>
+        <!-- Clock Status Icon -->
+        <div
+          class="clock"
+          id="clock"
+          onclick="openStatusWindow('clockApp', this)"
+        >
+          --:--
+        </div>
+      </div>
+    </div>
+
+    <div id="appleMenu" class="menu">
+      <div onclick="menuAction('About This Mac')">About This OS</div>
+      <div onclick="menuAction('System Info')">System Info</div>
+      <div onclick="openWindow('settings'); closeAllMenus();">Settings</div>
+      <div onclick="menuAction('Licenses')">Licenses</div>
+      <div onclick="menuAction('Shut Down')">Shut Down</div>
+    </div>
+    <div id="fileMenu" class="menu">
+      <div onclick="menuAction('New Document')">New</div>
+      <div onclick="menuAction('Open...')">Open</div>
+      <div onclick="menuAction('Save')">Save</div>
+    </div>
+    <div id="editMenu" class="menu">
+      <div onclick="menuAction('Undo')">Undo</div>
+      <div onclick="menuAction('Cut')">Cut</div>
+      <div onclick="menuAction('Copy')">Copy</div>
+      <div onclick="menuAction('Paste')">Paste</div>
+    </div>
+    <div id="viewMenu" class="menu">
+      <div onclick="menuAction('Zoom In')">Zoom In</div>
+      <div onclick="menuAction('Zoom Out')">Zoom Out</div>
+      <div onclick="menuAction('Full Screen')">Full Screen</div>
+    </div>
+
+    <div class="dock">
+      <div id="app-drawer" class="app-drawer">
+        <div class="app-drawer-content">
+          <div
+            class="dock-icon"
+            data-app="internet"
+            onclick="openWindow('internet')"
+          >
+            <img src="assets/icons/internet.webp" alt="Internet" />
+            <span class="label">Internet</span>
+          </div>
+          <div
+            class="dock-icon"
+            data-app="calculator"
+            onclick="openWindow('calculator')"
+          >
+            <img src="assets/icons/calculator.webp" alt="Calculator" />
+            <span class="label">Calculator</span>
+          </div>
+          <div class="dock-icon" data-app="music" onclick="openWindow('music')">
+            <img src="assets/icons/music.webp" alt="Music" />
+            <span class="label">Music</span>
+          </div>
+          <div class="dock-icon" data-app="mail" onclick="openWindow('mail')">
+            <img src="assets/icons/mail.webp" alt="mail" />
+            <span class="label">Mail</span>
+          </div>
+          <div
+            class="dock-icon"
+            data-app="coffee"
+            onclick="openWindow('coffee')"
+          >
+            <img src="assets/icons/pizza.webp" alt="coffee" />
+            <span class="label">Pizza</span>
+          </div>
+          <div
+            class="dock-icon"
+            data-app="terminal"
+            onclick="openWindow('terminal')"
+          >
+            <img src="assets/icons/terminal.webp" alt="Terminal" />
+            <span class="label">Terminal</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dock-icon" data-app="finder" onclick="openWindow('finder')">
+        <img src="assets/icons/finder.webp" alt="Finder" />
+        <span class="label">Finder</span>
+      </div>
+
+      <div
+        class="dock-icon hide-on-mobile"
+        data-app="internet"
+        onclick="openWindow('internet')"
+      >
+        <img src="assets/icons/internet.webp" alt="Internet" />
+        <span class="label">Internet</span>
+      </div>
+      <div
+        class="dock-icon hide-on-mobile"
+        data-app="calculator"
+        onclick="openWindow('calculator')"
+      >
+        <img src="assets/icons/calculator.webp" alt="Calculator" />
+        <span class="label">Calculator</span>
+      </div>
+      <div
+        class="dock-icon hide-on-mobile"
+        data-app="music"
+        onclick="openWindow('music')"
+      >
+        <img src="assets/icons/music.webp" alt="Music" />
+        <span class="label">Music</span>
+      </div>
+      <div
+        class="dock-icon hide-on-mobile"
+        data-app="mail"
+        onclick="openWindow('mail')"
+      >
+        <img src="assets/icons/mail.webp" alt="mail" />
+        <span class="label">Mail</span>
+      </div>
+      <div
+        class="dock-icon hide-on-mobile"
+        data-app="coffee"
+        onclick="openWindow('coffee')"
+      >
+        <img src="assets/icons/pizza.webp" alt="coffee" />
+        <span class="label">Pizza</span>
+      </div>
+      <div
+        class="dock-icon hide-on-mobile"
+        data-app="terminal"
+        onclick="openWindow('terminal')"
+      >
+        <img src="assets/icons/terminal.webp" alt="Terminal" />
+        <span class="label">Terminal</span>
+      </div>
+
+      <div
+        class="dock-icon show-on-mobile"
+        id="hamburger-icon"
+        onclick="toggleAppDrawer()"
+      >
+        <img src="assets/icons/appdrawer.webp" alt="Apps" />
+        <span class="label">Apps</span>
+      </div>
+
+      <div class="dock-icon" data-app="trash" onclick="openWindow('trash')">
+        <img src="assets/icons/trash.webp" alt="Trash" />
+        <span class="label">Trash</span>
+      </div>
+    </div>
+
+    <div id="finder" class="window" style="display: none">
+      <div class="title">
+        <span>Finder</span>
+        <span class="controls">
+          <span
+            class="ctrl ctrl-min"
+            title="Minimize"
+            onclick="minimizeWindow('finder')"
+            >−</span
+          >
+          <span
+            class="ctrl ctrl-close"
+            title="Close"
+            onclick="closeWindow('finder')"
+            >×</span
+          >
+        </span>
+      </div>
+      <div class="content finder-content">
+        <div class="finder-sidebar">
+          <div
+            class="sidebar-item active"
+            onclick="selectFinderLocation('desktop')"
+          >
+            Desktop
+          </div>
+          <div class="sidebar-item" onclick="selectFinderLocation('documents')">
+            Documents
+          </div>
+          <div class="sidebar-item" onclick="selectFinderLocation('downloads')">
+            Downloads
+          </div>
+        </div>
+        <div class="finder-main">
+          <button class="finder-toggle-btn">☰</button>
+          <div class="finder-main-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="music" class="window" style="display: none">
+      <div class="title">
+        <span>Music</span>
+        <span class="controls">
+          <span
+            class="ctrl ctrl-min"
+            title="Minimize"
+            onclick="minimizeWindow('music')"
+            >−</span
+          >
+          <span
+            class="ctrl ctrl-close"
+            title="Close"
+            onclick="closeWindow('music')"
+            >×</span
+          >
+        </span>
+      </div>
+      <div class="content music-player" style="padding: 0; height: 100%">
+        <div id="spotify-embed" style="height: 100%"></div>
+      </div>
+    </div>
+
+    <div id="calculator" class="window" style="display: none">
+      <div class="title">
+        <span>Calculator</span>
+        <span class="controls">
+          <span
+            class="ctrl ctrl-min"
+            title="Minimize"
+            onclick="minimizeWindow('calculator')"
+            >−</span
+          >
+          <span
+            class="ctrl ctrl-close"
+            title="Close"
+            onclick="closeWindow('calculator')"
+            >×</span
+          >
+        </span>
+      </div>
+      <div class="content">
+        <input
+          id="calcDisplay"
+          readonly
+          style="width: 100%; font-size: 18px; padding: 6px; margin-bottom: 8px"
+        />
+        <div
+          style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px"
+        >
+          <button onclick="calcInput('^')">^</button>
+          <button onclick="calcInput('√')">√</button>
+          <button onclick="calcInput('%')">%</button>
+          <button onclick="calcInput('*')">*</button>
+          <button onclick="calcInput('7')">7</button>
+          <button onclick="calcInput('8')">8</button>
+          <button onclick="calcInput('9')">9</button>
+          <button onclick="calcInput('/')">/</button>
+          <button onclick="calcInput('4')">4</button>
+          <button onclick="calcInput('5')">5</button>
+          <button onclick="calcInput('6')">6</button>
+          <button onclick="calcInput('+')">+</button>
+          <button onclick="calcInput('1')">1</button>
+          <button onclick="calcInput('2')">2</button>
+          <button onclick="calcInput('3')">3</button>
+          <button onclick="calcInput('-')">-</button>
+          <button onclick="clearCalc()">AC</button>
+          <button onclick="calcInput('0')">0</button>
+          <button onclick="calcInput('.')">.</button>
+          <button onclick="calculate()">=</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="terminal" class="window" style="display: none">
+      <div class="title">
+        <span>Terminal</span>
+        <span class="controls">
+          <span
+            class="ctrl ctrl-min"
+            title="Minimize"
+            onclick="minimizeWindow('terminal')"
+            >−</span
+          >
+          <span
+            class="ctrl ctrl-close"
+            title="Close"
+            onclick="closeWindow('terminal')"
+            >×</span
+          >
+        </span>
+      </div>
+      <div class="content terminal-content" onclick="focusTerminal()">
+        <div id="terminalOutput" class="terminal-output"></div>
+        <div class="terminal-input-container">
+          <span class="terminal-user">abhinavkuchhal</span
+          ><span class="terminal-prompt">@</span
+          ><span class="terminal-info">retro-os</span
+          ><span class="terminal-prompt">:</span
+          ><span class="terminal-path">~</span
+          ><span class="terminal-prompt prompt-cursor">$ </span>
+          <input
+            id="terminalInput"
+            type="text"
+            class="terminal-input"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div id="mail" class="window" style="display: none">
+      <div class="title">
+        <span>Send Me a Message</span>
+        <span class="controls">
+          <span
+            class="ctrl ctrl-min"
+            title="Minimize"
+            onclick="minimizeWindow('mail')"
+            >−</span
+          >
+          <span
+            class="ctrl ctrl-close"
+            title="Close"
+            onclick="closeWindow('mail')"
+            >×</span
+          >
+        </span>
+      </div>
+      <div class="content mail-content">
+        <form>
+          <div class="mail-header">
+            <label>To:</label>
+            <input type="text" value="Divesh Singh(Me)" readonly />
+          </div>
+          <div class="mail-header">
+            <label for="email-from">From:</label>
+            <input
+              id="email-from"
+              type="email"
+              name="email"
+              placeholder="yourEmail@example.com"
+              required
+            />
+          </div>
+          <div class="mail-header">
+            <label for="email-subject">Subject:</label>
+            <input
+              id="email-subject"
+              type="text"
+              name="subject"
+              placeholder="Regarding your awesome project..."
+              required
+            />
+          </div>
+          <div class="mail-body">
+            <textarea
+              name="message"
+              placeholder="Your message..."
+              required
+            ></textarea>
+          </div>
+          <div class="mail-footer">
+            <button type="submit">Send Message</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="coffee" class="window" style="display: none">
+      <div class="title">
+        <span>Support My Work</span>
+        <span class="controls">
+          <span
+            class="ctrl ctrl-close"
+            title="Close"
+            onclick="closeWindow('coffee')"
+            >×</span
+          >
+        </span>
+      </div>
+      <div class="content coffee-content">
+        <p>
+          If you enjoy this project, please consider supporting me with a pizza.
+          It helps me create more cool stuff like this!
+        </p>
+        <button class="buy-me-a-pizza-button">
+          <a
+            href="https://www.buymeacoffee.com/justpratiyush"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            🍕 Buy me a pizza
+          </a>
+        </button>
+      </div>
+    </div>
+
+    <div id="settings" class="window" style="display: none">
+      <div class="title">
+        <span>Settings</span>
+        <span class="controls">
+          <span
+            class="ctrl ctrl-min"
+            title="Minimize"
+            onclick="minimizeWindow('settings')"
+            >−</span
+          >
+          <span
+            class="ctrl ctrl-close"
+            title="Close"
+            onclick="closeWindow('settings')"
+            >×</span
+          >
+        </span>
+      </div>
+      <div class="content">
+        <div style="margin-bottom: 8px">Wallpaper:</div>
+        <button onclick="setWallpaper('classic')">Classic</button>
+        <button onclick="setWallpaper('alt')">Alternate</button>
+        <div style="margin-top: 12px">Effects:</div>
+        <label>
+          <input
+            type="checkbox"
+            id="grayscaleToggle"
+            onchange="toggleGrayscale(this.checked)"
+          />Grayscale wallpaper
+        </label>
+      </div>
+    </div>
+
+    <!-- Clock App (New simplified style, acting as a popover) -->
+    <div id="clockApp" class="window status-window" style="display: none">
+      <div class="title">
+        <span>Date & Time</span>
+        <span class="controls">
+          <span
+            class="ctrl ctrl-close"
+            title="Close"
+            onclick="closeWindow('clockApp')"
+            >×</span
+          >
+        </span>
+      </div>
+      <div
+        class="content"
+        style="
+          padding: 5px;
+          background: #f0f0f0;
+          border-radius: 0 0 5px 5px;
+          text-align: center;
+        "
+      >
+        <!-- Content inserted by JS (updateClockContent) -->
+      </div>
+    </div>
+
+    <!-- NEW: Wi-Fi Status Popover -->
+    <div id="wifiApp" class="window status-window" style="display: none">
+      <div class="title">
+        <span>Network Status</span>
+        <span class="controls">
+          <span
+            class="ctrl ctrl-close"
+            title="Close"
+            onclick="closeWindow('wifiApp')"
+            >×</span
+          >
+        </span>
+      </div>
+      <div
+        class="content"
+        id="wifiContent"
+        style="padding: 10px; min-width: 200px"
+      >
+        <!-- Content inserted by JS (updateWifiContent) -->
+      </div>
+    </div>
+
+    <!-- NEW: Battery Status Popover -->
+    <div id="batteryApp" class="window status-window" style="display: none">
+      <div class="title">
+        <span>Battery Status</span>
+        <span class="controls">
+          <span
+            class="ctrl ctrl-close"
+            title="Close"
+            onclick="closeWindow('batteryApp')"
+            >×</span
+          >
+        </span>
+      </div>
+      <div
+        class="content"
+        id="batteryContent"
+        style="padding: 10px; min-width: 250px"
+      >
+        <!-- Content inserted by JS (updateBatteryContent) -->
+      </div>
+    </div>
+
+    <div id="trash" class="window" style="display: none">
+      <div class="title">
+        <span>Trash</span>
+        <span class="controls">
+          <span
+            class="ctrl ctrl-close"
+            title="Close"
+            onclick="closeWindow('trash')"
+            >×</span
+          >
+        </span>
+      </div>
+      <div class="content" id="trashContent" style="padding: 15px"></div>
+    </div>
+
+    <div id="internet" class="window" style="display: none">
+      <div class="title">
+        <span>Internet</span>
+        <span class="controls">
+          <span
+            class="ctrl ctrl-min"
+            title="Minimize"
+            onclick="minimizeWindow('internet')"
+            >−</span
+          >
+          <span
+            class="ctrl ctrl-close"
+            title="Close"
+            onclick="closeWindow('internet')"
+            >×</span
+          >
+        </span>
+      </div>
+      <div class="content internet-content">
+        <div class="snoogle-header">
+          <img src="assets/icons/snoogle.webp" alt="Snoogle Logo" />
+        </div>
+        <form id="internetSearchForm">
+          <input
+            type="text"
+            id="internetSearchInput"
+            placeholder="Search or type a URL"
+          />
+        </form>
+        <div class="favourites-section">
+          <div class="favourites-title">Follow me here!</div>
+          <div class="favourites-container">
+            <a
+              href="https://x.com/JustPratiyush"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="favourite-item"
+            >
+              <img src="assets/icons/twitter.webp" alt="Twitter" />
+              <span class="favourite-label">Twitter</span>
+            </a>
+            <a
+              href="https://www.instagram.com/justpratiyush/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="favourite-item"
+            >
+              <img src="assets/icons/instagram.webp" alt="Instagram" />
+              <span class="favourite-label">Instagram</span>
+            </a>
+            <a
+              href="https://www.youtube.com/@JustPratiyush"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="favourite-item"
+            >
+              <img src="assets/icons/youtube.webp" alt="Youtube" />
+              <span class="favourite-label">Youtube</span>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/abhinav-kuchhal/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="favourite-item"
+            >
+              <img src="assets/icons/linkedin.webp" alt="LinkedIn" />
+              <span class="favourite-label">LinkedIn</span>
+            </a>
+            <a
+              href="https://github.com/JustPratiyush"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="favourite-item"
+            >
+              <img src="assets/icons/github.webp" alt="GitHub" />
+              <span class="favourite-label">GitHub</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <template id="readme-template">
+      <div class="window" id="readme" style="display: block; height: auto">
+        <div class="title">
+          <span>ReadMe.txt</span>
+          <span class="controls">
+            <span
+              class="ctrl ctrl-close"
+              title="Close"
+              onclick="closeWindow('readme')"
+              >×</span
+            >
+          </span>
+        </div>
+        <div
+          class="content"
+          style="padding: 15px; font-size: 16px; line-height: 1.6"
+        >
+          <h2 style="font-family: 'VT323', monospace; font-size: 32px">
+            Hey! Thanks for Visitng.
+          </h2>
+          <p>The site is still under Construction</p>
+          <p>🏗️ 🧱 🚜</p>
+          <p>
+            I will soon be adding more cool stuff, mini games and easter egg so
+            stay tuned.
+          </p>
+          <!-- <hr
+            style="border: none; border-top: 1px solid #ccc; margin: 10px 0"
+          />
+          <h4>Education</h4>
+          <p>
+            <strong>Manipal University Jaipur (2023 - 2027)</strong><br />
+            Bachelor of Technology, Computer Science
+          </p>
+          <h4>Skills</h4>
+          <p>
+            <strong>Languages:</strong> JavaScript, HTML, CSS, Python<br />
+            <strong>Frameworks:</strong> React, Node.js<br />
+            <strong>Tools:</strong> Git, Docker, Webpack, Figma
+          </p> -->
+        </div>
+      </div>
+    </template>
+    `
+
+    <template id="projects-template">
+      <div class="window" id="projects" style="display: block">
+        <div class="title">
+          <span>Projects</span>
+          <span class="controls">
+            <span
+              class="ctrl ctrl-close"
+              title="Close"
+              onclick="closeWindow('projects')"
+              >×</span
+            >
+          </span>
+        </div>
+        <div class="content projects-window-content">
+          <div class="projects-sidebar"></div>
+          <div class="projects-main">
+            <button class="projects-toggle-btn">☰</button>
+            <div class="project-details-container"></div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <script src="js/main.js" defer></script>
+    <script src="js/system.js" defer></script>
+    <script src="js/auth.js" defer></script>
+
+    <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
+
+    <script src="js/apps/calculator.js" defer></script>
+    <script src="js/apps/music.js" defer></script>
+    <script src="js/apps/finder.js" defer></script>
+    <script src="js/apps/trash.js" defer></script>
+    <!-- UPDATED SCRIPT NAME -->
+    <script src="js/apps/datetime_battery_wifi.js" defer></script>
+    <script src="js/apps/terminal.js" defer></script>
+    <script src="js/mail.js" defer></script>
+
+    <script>
+      window.va =
+        window.va ||
+        function () {
+          (window.vaq = window.vaq || []).push(arguments);
+        };
+    </script>
+    <script src="/_vercel/insights/script.js"></script>
+  </body>
+</html>
