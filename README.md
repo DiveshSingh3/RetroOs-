@@ -15,9 +15,6 @@ RetroOS is a creative portfolio website designed and developed by **Abhinav Kuch
 - **Modern Tech Stack**: Built with vanilla web technologies and Node.js backend
 - **Vercel Deployment**: Serverless functions for email handling
 
-## 🚀 Live Demo
-
-Visit the live website: [https://abhinavkuchhal.com](https://abhinavkuchhal.com)
 
 ## 🛠 Tech Stack
 
